@@ -15,8 +15,6 @@ public class MusicTest1 {
 
             Track track = seq.createTrack();
 
-            MidiEvent midiEvent = null;
-
             ShortMessage first = new ShortMessage();
             first.setMessage(192, 1, instrument, 100);
             MidiEvent changeInstrument = new MidiEvent(first, 1);
