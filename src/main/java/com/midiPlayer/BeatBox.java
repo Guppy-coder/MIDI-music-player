@@ -7,8 +7,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
 import javax.sound.midi.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class BeatBox {
 
@@ -53,6 +55,12 @@ public class BeatBox {
         JButton downTempo = new JButton("Tempo Down");
         downTempo.addActionListener(new MyDownTempoListener());
         buttonBox.add(downTempo);
+        JButton saveTrack = new JButton("Save Beat");
+        saveTrack.addActionListener(new saveBeatBoxPattern());
+        buttonBox.add(saveTrack);
+        JButton restoreTrack = new JButton("Restore Track");
+        restoreTrack.addActionListener(new restoreBeatBoxPattern());
+        buttonBox.add(restoreTrack);
 
         Box nameBox = new Box(BoxLayout.Y_AXIS);
         for (int i = 0; i < 16; i++) {
@@ -177,5 +185,56 @@ public class BeatBox {
         }
     }
 
+    public class saveBeatBoxPattern implements ActionListener {
 
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            boolean[] checkboxState = new boolean[256];
+            for (int i = 0; i < 256; i++) {
+                JCheckBox check = checkboxList.get(i);
+                checkboxState[i] = check.isSelected();
+            }
+
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Save Beat Pattern");
+            int userSelection = fileChooser.showSaveDialog(theFrame);
+
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                try (FileOutputStream fileOutputStream = new FileOutputStream(fileToSave);
+                     ObjectOutputStream os = new ObjectOutputStream(fileOutputStream)) {
+                    os.writeObject(checkboxState);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public class restoreBeatBoxPattern implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Load Beat Pattern");
+            int userSelection = fileChooser.showOpenDialog(theFrame);
+
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToOpen = fileChooser.getSelectedFile();
+                try (FileInputStream fileInputStream = new FileInputStream(fileToOpen);
+                     ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+                    boolean[] checkBoxState = (boolean[]) objectInputStream.readObject();
+
+                    for (int i = 0; i < 256; i++) {
+                        JCheckBox check = checkboxList.get(i);
+                        check.setSelected(checkBoxState[i]);
+                    }
+                    sequencer.stop();
+                    buildTrackAndStart();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
 }
