@@ -201,7 +201,7 @@ public class BeatBox {
 
             if (userSelection == JFileChooser.APPROVE_OPTION) {
                 File fileToSave = fileChooser.getSelectedFile();
-                try (FileOutputStream fileOutputStream = new FileOutputStream(fileToSave + ".ser");
+                try (FileOutputStream fileOutputStream = new FileOutputStream(fileToSave);
                      ObjectOutputStream os = new ObjectOutputStream(fileOutputStream)) {
                     os.writeObject(checkboxState);
                 } catch (Exception ex) {
