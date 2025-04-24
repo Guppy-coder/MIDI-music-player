@@ -13,6 +13,7 @@ public class Server {
 
     private void startServer(){
         try(ServerSocket serverSocket = new ServerSocket(PORT_NUMBER)) {
+            System.out.println("Listening on port: " + PORT_NUMBER);
             Socket clientSocket = serverSocket.accept();
             ClientHandler client = new ClientHandler(clientSocket);
 
@@ -21,5 +22,10 @@ public class Server {
         }catch (IOException e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public static void main(String[] args) {
+        Server server = new Server();
+        server.startServer();
     }
 }
