@@ -14,11 +14,13 @@ public class Server {
     private void startServer(){
         try(ServerSocket serverSocket = new ServerSocket(PORT_NUMBER)) {
             System.out.println("Listening on port: " + PORT_NUMBER);
-            Socket clientSocket = serverSocket.accept();
-            ClientHandler client = new ClientHandler(clientSocket);
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                ClientHandler client = new ClientHandler(clientSocket);
 
-            Thread thread = new Thread(client);
-            thread.start();
+                Thread thread = new Thread(client);
+                thread.start();
+            }
         }catch (IOException e){
             System.out.println(e.getMessage());
         }
