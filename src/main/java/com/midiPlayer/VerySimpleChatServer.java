@@ -61,8 +61,8 @@ public class VerySimpleChatServer {
         Iterator it = clientOutputStreams.iterator();
         while (it.hasNext()) {
             try {
-                PrintWriter writer = (PrintWriter) it.next();
-                writer.println(message);
+                ObjectOutputStream writer = (ObjectOutputStream) it.next();
+                writer.writeObject(message);
                 writer.flush();
             } catch (Exception ex) {
                 ex.printStackTrace();
