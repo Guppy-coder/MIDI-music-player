@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 public class VerySimpleChatServer {
-    ArrayList<PrintWriter> clientOutputStreams;
+    ArrayList<ObjectOutputStream> clientOutputStreams;
 
     public class ClientHandler implements Runnable {
         BufferedReader reader;
@@ -45,7 +45,7 @@ public class VerySimpleChatServer {
 
             while (true) {
                 Socket clientSocket = serverSock.accept();
-                PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
+                ObjectOutputStream writer = new ObjectOutputStream(clientSocket.getOutputStream());
                 clientOutputStreams.add(writer);
                 Thread t = new Thread(new ClientHandler(clientSocket));
                 t.start();
