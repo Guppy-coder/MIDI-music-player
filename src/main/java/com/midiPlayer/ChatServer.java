@@ -3,7 +3,7 @@ package com.midiPlayer;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-public class VerySimpleChatServer {
+public class ChatServer {
     ArrayList<ObjectOutputStream> clientOutputStreams;
 
     public class ClientHandler implements Runnable {
@@ -25,6 +25,7 @@ public class VerySimpleChatServer {
             String message;
             try {
                 while ((message = reader.readLine()) != null) {
+                    System.out.println("we got an object");
                     System.out.println("read " + message);
                     tellEveryone(message);
 
@@ -36,7 +37,7 @@ public class VerySimpleChatServer {
     } // close inner class
 
     public static void main(String[] args) {
-        new VerySimpleChatServer().go();
+        new ChatServer().go();
     }
 
     public void go() {
@@ -65,7 +66,9 @@ public class VerySimpleChatServer {
                 writer.writeObject(message);
                 writer.flush();
             } catch (Exception ex) {
-                ex.printStackTrace();
+//                ex.printStackTrace();
+                System.err.println("Socket Closed");
+                it.remove(); // remove dead connections
             }
 
         } // end while

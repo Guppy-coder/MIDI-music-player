@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
@@ -44,12 +45,14 @@ public class BeatBox {
     int[] instruments = {35,42,46,38,49,39,50,60,70,72,64,56,58,47,67,63};
 
     public static void main(String[] args) {
-        new BeatBox().startUp(args[0]);;
+        new BeatBox().startUp(args[0]);
     }
 
+
+
+    // Modify the startUp method:
     public void startUp(String name) {
         userName = name;
-        // open connection to the server
         try {
             Socket sock = new Socket("127.0.0.1", 5000);
             out = new ObjectOutputStream(sock.getOutputStream());
@@ -57,7 +60,7 @@ public class BeatBox {
             Thread remote = new Thread(new RemoteReader());
             remote.start();
         } catch(Exception ex) {
-            System.out.println("couldn’t connect - you’ll have to play alone.");
+            System.out.println("Couldn't connect - you'll have to play alone.");
         }
         setUpMidi();
         buildGUI();
@@ -129,6 +132,8 @@ public class BeatBox {
         theFrame.pack();
         theFrame.setVisible(true);
     } // close buildGUI
+
+
     public void setUpMidi() {
         try {
             sequencer = MidiSystem.getSequencer();
@@ -273,6 +278,7 @@ public class BeatBox {
                 while((obj=in.readObject()) != null) {
                     System.out.println("got an object from server");
                     System.out.println(obj.getClass());
+                    System.out.println(obj);
                     String nameToShow = (String) obj;
                     checkboxState = (boolean[]) in.readObject();
                     otherSeqsMap.put(nameToShow, checkboxState);
